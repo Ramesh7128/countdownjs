@@ -1,20 +1,21 @@
 var heading = ["Eat","Sleep", "Rave", "Repeat"];
-var images = ["sims.gif","test.gif","test1.gif","test3.gif"];
+var images = ["check.gif","test.gif","test1.gif","test3.gif"];
 var color = ["red", "green", "yellow", "blue"];
 var size = 0
 var i = 0;
 var secondsRemaining;
 var check;
 var intervalHandle;
-
+var initial, body;
+	
 function changeMess() {
 	var head = document.getElementById("test");
-	var body = document.getElementById('body');
+	body = document.getElementById('body');
 	if (i==4) {
 		i = 0;
 	}
-	size = (50*i)+90;	
-	body.setAttribute("style","background-image: url("+ images[i] +"); background-size: 100%; background-repeat: no-repeat;");
+	size = (60*i)+50;	
+	body.setAttribute("style","background: url("+ images[i] +") fixed; background-size: cover; background-repeat: no-repeat;");
 	console.log(i);
 	console.log(heading[i]);      
 	head.innerHTML = heading[i];
@@ -25,18 +26,17 @@ function changeMess() {
 function tick() {
 
 	var timeDisplay = document.getElementById("timer");
-	//console.log(secondsRemaining);
 	var mins = Math.floor(secondsRemaining/60);
 	var secs = secondsRemaining - (mins*60);
-	//alert("mins:"+mins);	
-	//alert("secs:"+secs);
-	//console.log(mins);
-	//console.log(secs);
 	var message = mins.toString() + ":" + secs.toString();
 	timeDisplay.innerHTML = message;
 
 	if (secondsRemaining === 0) {
-		alert("Done!!");
+		var audio = new Audio('trippy.mp3');
+		audio.play();
+		body.setAttribute("style","background: url('trippyexplosion.GIF') fixed; background-size: cover; background-repeat: no-repeat;");
+		clearInterval(initial);
+		setTimeout(function(){ audio.pause() }, 33000);
 		clearInterval(intervalHandle);
 		document.getElementById("timer").style.display = "none";
 		document.getElementById("inst").style.display = "block";
@@ -47,12 +47,13 @@ function tick() {
 
 function startCountDown() {
 	var minutes = document.getElementById("minutes").value;
+	var secs = document.getElementById("secs").value;
 	console.log(minutes);
-	if (isNaN(minutes)) {
+	if (isNaN(minutes) && isNaN(secs)) {
 		alert("please enter a number");
 		return;
 	}
-	secondsRemaining = minutes * 60;
+	secondsRemaining = (minutes * 60) + secs ;
 	intervalHandle = setInterval(tick, 1000);
 	document.getElementById("inst").style.display = "none";
 
@@ -62,21 +63,27 @@ function startCountDown() {
 
 window.onload = function() {
 		
-	setInterval(changeMess,500);
+	initial = setInterval(changeMess,500);
 	check = document.createElement("input");
 	check.setAttribute("type", "text");
 	check.setAttribute("id", "minutes");
-	check.style.textAlign = "center";
-	check.setAttribute("value", "enter a no");
+	check.setAttribute("value", "Set minutes");
+	check1 = document.createElement("input");
+	check1.setAttribute("type", "text");
+	check1.setAttribute("id", "secs");
+	check1.setAttribute("value", "Set seconds");
 	var butt = document.createElement("input");
 	butt.setAttribute("id", "butt");
 	butt.setAttribute("type", "button");	
-	butt.setAttribute("value", "countdown");
+	butt.setAttribute("value", "Start");
 	butt.onclick = function() {
 		startCountDown();
 	};	
-	document.getElementById("inst").appendChild(check);	
+	document.getElementById("inst").appendChild(check);
+	document.getElementById("inst").appendChild(check1);	
 	document.getElementById("inst").appendChild(butt);
+	document.getElementById("inst").style.textAlign = "center";
 	
 };
+
 
